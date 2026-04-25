@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skill Assessment Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+        .header { background: linear-gradient(135deg, #1e40af, #7c3aed); padding: 20px 40px; display: flex; align-items: center; gap: 15px; }
+        .header h1 { font-size: 1.8rem; font-weight: 700; }
+        .header p { font-size: 0.9rem; opacity: 0.85; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+        .card { background: #1e293b; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #334155; }
+        .card h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: #93c5fd; display: flex; align-items: center; gap: 8px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        textarea { width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 12px; color: #e2e8f0; font-size: 0.9rem; resize: vertical; min-height: 150px; }
+        textarea:focus { outline: none; border-color: #3b82f6; }
+
+        input[type="file"] { width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 12px; color: #e2e8f0; cursor: pointer; }
+
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #3b82f6, #7c3aed); color: white; width: 100%; margin-top: 15px; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-success { background: #059669; color: white; }
+        .btn-success:hover { background: #047857; }
+        .btn-purple { background: #7c3aed; color: white; }
+        .btn-purple:hover { background: #6d28d9; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .skill-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+        .skill-matched { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+        .skill-gap-critical { background: #450a0a; color: #fca5a5; border: 1px solid #dc2626; }
+        .skill-gap-nice { background: #431407; color: #fed7aa; border: 1px solid #ea580c; }
+
+        .chat-container { height: 400px; overflow-y: auto; background: #0f172a; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
+        .message { margin-bottom: 15px; display: flex; gap: 10px; }
+        .message.user { flex-direction: row-reverse; }
+        .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; }
+        .message.bot .message-bubble { background: #1e3a5f; border: 1px solid #1e40af; }
+        .message.user .message-bubble { background: #4c1d95; border: 1px solid #7c3aed; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .bot-avatar { background: #1e40af; }
+        .user-avatar { background: #7c3aed; }
+
+        .chat-input-area { display: flex; gap: 10px; }
+        .chat-input { flex: 1; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 12px; color: #e2e8f0; font-size: 0.9rem; }
+        .chat-input:focus { outline: none; border-color: #3b82f6; }
+
+        .plan-phase { background: #0f172a; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #3b82f6; }
+        .plan-phase h3 { color: #93c5fd; margin-bottom: 8px; }
+        .plan-phase .duration { color: #64748b; font-size: 0.85rem; margin-bottom: 8px; }
+        .plan-phase .goal { color: #a5b4fc; font-size: 0.9rem; margin-bottom: 12px; font-style: italic; }
+        .resource-item { background: #1e293b; border-radius: 6px; padding: 10px; margin-bottom: 8px; }
+        .resource-item a { color: #60a5fa; text-decoration: none; font-weight: 500; }
+        .resource-item a:hover { text-decoration: underline; }
+        .resource-meta { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #0f172a; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #334155; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #3b82f6; }
+        .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+        .hidden { display: none; }
+        .loading { text-align: center; color: #64748b; padding: 20px; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; }
+        .alert-error { background: #450a0a; border: 1px solid #dc2626; color: #fca5a5; }
+        .alert-success { background: #064e3b; border: 1px solid #059669; color: #6ee7b7; }
+
+        .step-indicator { display: flex; gap: 0; margin-bottom: 30px; }
+        .step { flex: 1; padding: 12px; text-align: center; font-size: 0.85rem; font-weight: 600; border-bottom: 3px solid #334155; color: #64748b; }
+        .step.active { border-bottom-color: #3b82f6; color: #93c5fd; }
+        .step.done { border-bottom-color: #059669; color: #6ee7b7; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>🤖 AI Skill Assessment Agent</h1>
+        <p>Upload your resume & JD → Get assessed → Receive a personalised learning plan</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step active" id="step1">① Upload</div>
+        <div class="step" id="step2">② Analysis</div>
+        <div class="step" id="step3">③ Assessment</div>
+        <div class="step" id="step4">④ Learning Plan</div>
+    </div>
+
+    <!-- SECTION 1: Upload -->
+    <div id="section-upload">
+        <div class="grid">
+            <div class="card">
+                <h2>📋 Job Description</h2>
+                <textarea id="jd-text" placeholder="Paste the job description here..."></textarea>
+            </div>
+            <div class="card">
+                <h2>📄 Your Resume</h2>
+                <textarea id="resume-text" placeholder="Paste your resume text here..."></textarea>
+                <p style="text-align:center; color:#64748b; margin: 10px 0;">— or upload a file —</p>
+                <input type="file" id="resume-file" accept=".pdf,.docx,.txt">
+            </div>
+        </div>
+        <div id="upload-alert"></div>
+        <button class="btn btn-primary" onclick="uploadAndAnalyze()">🚀 Analyze & Start Assessment</button>
+    </div>
+
+    <!-- SECTION 2: Analysis Results -->
+    <div id="section-analysis" class="hidden">
+        <div class="card">
+            <h2>📊 Skill Analysis Results</h2>
+            <div class="stats-grid" id="stats-grid"></div>
+            <div style="margin-bottom:15px;">
+                <strong style="color:#6ee7b7;">✅ Matched Skills:</strong>
+                <div class="skills-grid" id="matched-skills"></div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <strong style="color:#fca5a5;">❌ Missing Must-Have Skills:</strong>
+                <div class="skills-grid" id="gap-skills-critical"></div>
+            </div>
+            <div>
+                <strong style="color:#fed7aa;">⚠️ Missing Nice-to-Have Skills:</strong>
+                <div class="skills-grid" id="gap-skills-nice"></div>
+            </div>
+            <button class="btn btn-success" style="margin-top:20px; width:100%;" onclick="startAssessment()">🎯 Start Conversational Assessment</button>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Chat Assessment -->
+    <div id="section-chat" class="hidden">
+        <div class="card">
+            <h2>💬 Conversational Skill Assessment</h2>
+            <div class="chat-container" id="chat-container">
+                <div class="loading">Starting assessment...</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your answer here..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-success" onclick="sendMessage()">Send</button>
+                <button class="btn btn-purple" id="plan-btn" onclick="getLearningPlan()" style="display:none;">📚 Get Learning Plan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: Learning Plan -->
+    <div id="section-plan" class="hidden">
+        <div class="card">
+            <h2>📚 Your Personalised Learning Plan</h2>
+            <div id="plan-content"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    async function uploadAndAnalyze() {
+        const jdText = document.getElementById('jd-text').value.trim();
+        const resumeText = document.getElementById('resume-text').value.trim();
+        const resumeFile = document.getElementById('resume-file').files[0];
+
+        if (!jdText) { showAlert('upload-alert', 'Please enter a job description', 'error'); return; }
+        if (!resumeText && !resumeFile) { showAlert('upload-alert', 'Please enter resume text or upload a file', 'error'); return; }
+
+        showAlert('upload-alert', 'Analyzing... please wait', 'success');
+
+        const formData = new FormData();
+        formData.append('jd_text', jdText);
+        if (resumeFile) formData.append('resume_file', resumeFile);
+        else formData.append('resume_text', resumeText);
+
+        try {
+            const res = await fetch('/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.error) { showAlert('upload-alert', data.error, 'error'); return; }
+
+            displayAnalysis(data);
+            setStep(2);
+        } catch(e) {
+            showAlert('upload-alert', 'Error: ' + e.message, 'error');
+        }
+    }
+
+    function displayAnalysis(data) {
+        const gaps = data.gaps_data;
+        document.getElementById('stats-grid').innerHTML = `
+            <div class="stat-card"><div class="stat-number">${gaps.total_required}</div><div class="stat-label">Total Required Skills</div></div>
+            <div class="stat-card"><div class="stat-number" style="color:#059669">${gaps.match_count}</div><div class="stat-label">Skills You Have</div></div>
+            <div class="stat-card"><div class="stat-number" style="color:#dc2626">${gaps.gap_count}</div><div class="stat-label">Skills to Learn</div></div>
+        `;
+
+        const matchedEl = document.getElementById('matched-skills');
+        matchedEl.innerHTML = gaps.matched_skills.map(s => `<span class="skill-tag skill-matched">${s.skill}</span>`).join('');
+
+        const criticalEl = document.getElementById('gap-skills-critical');
+        criticalEl.innerHTML = gaps.skill_gaps.filter(s => s.importance === 'must-have').map(s => `<span class="skill-tag skill-gap-critical">${s.skill}</span>`).join('');
+
+        const niceEl = document.getElementById('gap-skills-nice');
+        niceEl.innerHTML = gaps.skill_gaps.filter(s => s.importance === 'nice-to-have').map(s => `<span class="skill-tag skill-gap-nice">${s.skill}</span>`).join('');
+
+        document.getElementById('section-analysis').classList.remove('hidden');
+    }
+
+    async function startAssessment() {
+        document.getElementById('section-chat').classList.remove('hidden');
+        document.getElementById('section-chat').scrollIntoView({ behavior: 'smooth' });
+        setStep(3);
+
+        try {
+            const res = await fetch('/start_assessment', { method: 'POST' });
+            const data = await res.json();
+            document.getElementById('chat-container').innerHTML = '';
+            if (data.error) { addMessage('bot', 'Error: ' + data.error); return; }
+            addMessage('bot', data.message);
+        } catch(e) {
+            addMessage('bot', 'Error starting assessment: ' + e.message);
+        }
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage('user', message);
+        input.value = '';
+
+        try {
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await res.json();
+            if (data.error) { addMessage('bot', 'Error: ' + data.error); return; }
+            addMessage('bot', data.message);
+
+            if (data.assessment_complete) {
+                document.getElementById('plan-btn').style.display = 'block';
+                document.getElementById('chat-input').disabled = true;
+            }
+        } catch(e) {
+            addMessage('bot', 'Error: ' + e.message);
+        }
+    }
+
+    async function getLearningPlan() {
+        document.getElementById('section-plan').classList.remove('hidden');
+        document.getElementById('section-plan').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('plan-content').innerHTML = '<div class="loading">⏳ Generating your personalised learning plan...</div>';
+        setStep(4);
+
+        try {
+            const res = await fetch('/learning_plan');
+            const data = await res.json();
+            if (data.error) { document.getElementById('plan-content').innerHTML = '<div class="alert alert-error">' + data.error + '</div>'; return; }
+            displayPlan(data.plan);
+        } catch(e) {
+            document.getElementById('plan-content').innerHTML = '<div class="alert alert-error">Error: ' + e.message + '</div>';
+        }
+    }
+
+    function displayPlan(plan) {
+        let html = `<p style="color:#a5b4fc; margin-bottom:20px;">⏱️ Total Duration: <strong>${plan.total_duration}</strong></p>`;
+
+        plan.phases.forEach(phase => {
+            html += `<div class="plan-phase">
+                <h3>Phase ${phase.phase}: ${phase.title}</h3>
+                <div class="duration">⏱️ ${phase.duration} | Skills: ${phase.skills.join(', ')}</div>
+                <div class="goal">🎯 ${phase.goal}</div>`;
+
+            phase.resources.forEach(r => {
+                html += `<div class="resource-item">
+                    <a href="${r.url}" target="_blank">📖 ${r.title}</a>
+                    <div class="resource-meta">${r.type} • ${r.duration} • Priority: ${r.priority}</div>
+                </div>`;
+            });
+            html += `</div>`;
+        });
+
+        if (plan.adjacent_skills && plan.adjacent_skills.length) {
+            html += `<div class="plan-phase" style="border-left-color:#7c3aed;">
+                <h3>🔗 Adjacent Skills to Explore</h3>
+                <div class="skills-grid">${plan.adjacent_skills.map(s => `<span class="skill-tag skill-matched">${s}</span>`).join('')}</div>
+            </div>`;
+        }
+
+        if (plan.tips && plan.tips.length) {
+            html += `<div class="plan-phase" style="border-left-color:#059669;">
+                <h3>💡 Learning Tips</h3>
+                <ul style="padding-left:20px; color:#a5b4fc;">${plan.tips.map(t => `<li style="margin-bottom:6px;">${t}</li>`).join('')}</ul>
+            </div>`;
+        }
+
+        document.getElementById('plan-content').innerHTML = html;
+    }
+
+    function addMessage(role, text) {
+        const container = document.getElementById('chat-container');
+        const div = document.createElement('div');
+        div.className = `message ${role}`;
+        div.innerHTML = `
+            <div class="avatar ${role}-avatar">${role === 'bot' ? '🤖' : '👤'}</div>
+            <div class="message-bubble">${text}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+    function showAlert(id, msg, type) {
+        document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    }
+
+    function setStep(n) {
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById('step' + i);
+            el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+        }
+    }
+</script>
+
+</body>
+</html>
