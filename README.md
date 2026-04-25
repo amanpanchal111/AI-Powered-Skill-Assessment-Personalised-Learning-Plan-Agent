@@ -1,24 +1,24 @@
 # 🤖 AI Skill Assessment & Personalised Learning Plan Agent
 
-> *A resume tells you what someone claims to know — not how well they actually know it.*
+Project Overview
 
-An intelligent agent that bridges this gap. It takes a **Job Description** and a **candidate's resume**, conversationally assesses real proficiency on each required skill, identifies gaps, and generates a **personalised learning plan** focused on adjacent skills the candidate can realistically acquire — complete with curated resources and time estimates.
+This platform automates the candidate screening process by matching uploaded resumes against Job Descriptions (JDs). It uses AI to extract skills, conduct automated conversational assessments to score proficiency, and generates a personalized learning roadmap for any identified skill gaps..
 
 ---
 
 ## 📸 Demo
 
 ### Step 1 — Upload JD & Resume
-![Upload Screen](https://i.imgur.com/placeholder1.png)
+[Upload Screen](https://i.imgur.com/placeholder1.png)
 
 ### Step 2 — Skill Gap Analysis
-![Analysis Screen](https://i.imgur.com/placeholder2.png)
+[Analysis Screen](https://i.imgur.com/placeholder2.png)
 
 ### Step 3 — Conversational Assessment
-![Chat Screen](https://i.imgur.com/placeholder3.png)
+[Chat Screen](https://i.imgur.com/placeholder3.png)
 
 ### Step 4 — Personalised Learning Plan
-![Learning Plan](https://i.imgur.com/placeholder4.png)
+[Learning Plan](https://i.imgur.com/placeholder4.png)
 
 ---
 
@@ -221,14 +221,8 @@ For platforms like **Render** or **Railway**:
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [yourlinkedin](https://linkedin.com/in/yourlinkedin)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
+- GitHub: [amanpanchal111](https://github.com/yourusername)
+- LinkedIn: [https://www.linkedin.com/in/aman-panchal-b31829231](https://linkedin.com/in/yourlinkedin)
 
 ---
 
