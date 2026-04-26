@@ -9,16 +9,12 @@ This platform automates the candidate screening process by matching uploaded res
 ## 📸 Demo
 
 ### Step 1 — Upload JD & Resume
-[Upload Screen](https://i.imgur.com/placeholder1.png)
 
 ### Step 2 — Skill Gap Analysis
-[Analysis Screen](https://i.imgur.com/placeholder2.png)
 
 ### Step 3 — Conversational Assessment
-[Chat Screen](https://i.imgur.com/placeholder3.png)
 
 ### Step 4 — Personalised Learning Plan
-[Learning Plan](https://i.imgur.com/placeholder4.png)
 
 ---
 
