@@ -7,8 +7,15 @@ from groq import Groq
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY").strip())
+import streamlit as st
 
+def get_api_key():
+    try:
+        return st.secrets["GROQ_API_KEY"]
+    except:
+        return os.getenv("GROQ_API_KEY", "").strip()
+
+client = Groq(api_key=get_api_key())
 def call_groq(prompt):
     """Call Groq API and return parsed JSON response."""
     response = client.chat.completions.create(
