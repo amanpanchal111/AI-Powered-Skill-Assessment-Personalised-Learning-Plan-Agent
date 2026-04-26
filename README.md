@@ -222,7 +222,7 @@ For platforms like **Render** or **Railway**:
 
 **Your Name**
 - GitHub: [amanpanchal111](https://github.com/yourusername)
-- LinkedIn: [https://www.linkedin.com/in/aman-panchal-b31829231](https://linkedin.com/in/yourlinkedin)
+- LinkedIn: [https://www.linkedin.com/in/aman-panchal-b31829231](https://linkedin.com/in/https://www.linkedin.com/in/aman-panchal-b31829231)
 
 ---
 
