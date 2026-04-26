@@ -227,6 +227,6 @@ For platforms like **Render** or **Railway**:
 ---
 
 ## 🌐 Live Demo
-👉 **[Click here to use the app](https://resume-skillcheck-ai.streamlit.app/)**
+- Resume-skillcheck-ai.streamlit: 👉 **[Click here to use the app](https://resume-skillcheck-ai.streamlit.app/)**
 > No installation required — just open and use!
 > Built with using Python, Flask, and Groq LLaMA 3.3 70B
