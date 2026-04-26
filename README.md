@@ -221,7 +221,7 @@ For platforms like **Render** or **Railway**:
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [amanpanchal111](https://github.com/yourusername)
+- GitHub: [amanpanchal111](https://github.com/amanpanchal111)
 - LinkedIn: [https://www.linkedin.com/in/aman-panchal-b31829231](https://linkedin.com/in/https://www.linkedin.com/in/aman-panchal-b31829231)
 
 ---
